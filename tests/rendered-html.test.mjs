@@ -14,26 +14,26 @@ async function render() {
   );
 }
 
-test("server-renders the location-first dashboard shell", async () => {
+test("server-renders the full-viewport environmental display", async () => {
   const response = await render();
   assert.equal(response.status, 200);
   assert.match(response.headers.get("content-type") ?? "", /^text\/html\b/i);
 
   const html = await response.text();
   assert.match(html, /<title>Atmosphere Now/);
-  assert.match(html, /Your surroundings/);
-  assert.match(html, /Requesting your location/);
-  assert.match(html, /They are not stored/);
+  assert.match(html, /Current environmental readings/);
+  assert.match(html, /Waiting for local conditions/);
   assert.doesNotMatch(html, /codex-preview|Your site is taking shape/);
 });
 
-test("includes every requested environmental reading and live data source", async () => {
+test("includes ten simple readings and live data sources", async () => {
   const dashboard = await readFile(
     new URL("../app/environment-dashboard.tsx", import.meta.url),
     "utf8",
   );
 
   for (const label of [
+    "Temperature",
     "Heat index",
     "Wind speed",
     "Wind direction",
@@ -50,7 +50,5 @@ test("includes every requested environmental reading and live data source", asyn
   assert.match(dashboard, /navigator\.geolocation\.getCurrentPosition/);
   assert.match(dashboard, /api\.open-meteo\.com\/v1\/forecast/);
   assert.match(dashboard, /air-quality-api\.open-meteo\.com\/v1\/air-quality/);
-  assert.match(dashboard, /navigator\.mediaDevices\.getUserMedia/);
-  assert.match(dashboard, /AmbientLightSensor/);
-  assert.match(dashboard, /not calibrated dBA/i);
+  assert.match(dashboard, /calibrated local sensor/i);
 });
