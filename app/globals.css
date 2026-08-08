@@ -8,7 +8,7 @@
 
 * { box-sizing: border-box; }
 
-html, body { width: 100%; height: 100%; overflow: hidden; }
+html, body { width: 100%; min-height: 100%; }
 
 body {
   margin: 0;
@@ -18,69 +18,65 @@ body {
 }
 
 .screen-grid {
-  width: 100vw;
-  height: 100dvh;
-  padding: clamp(12px, 2.1vw, 32px);
+  width: 100%;
+  min-height: 100dvh;
+  padding: clamp(12px, 2vw, 32px);
   display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  grid-template-rows: repeat(5, minmax(0, 1fr));
-  gap: clamp(8px, 1.25vw, 20px);
+  grid-template-columns: repeat(auto-fit, minmax(min(16rem, 100%), 1fr));
+  grid-auto-rows: minmax(0, 1fr);
+  gap: clamp(8px, 1.1vw, 20px);
 }
 
 .reading-card {
   min-width: 0;
   min-height: 0;
-  padding: clamp(16px, 2.1vw, 34px);
+  padding: clamp(16px, 2vw, 34px);
   display: flex;
   flex-direction: column;
   justify-content: space-between;
+  overflow: hidden;
   border: 1px solid var(--line);
   border-radius: clamp(12px, 1.5vw, 22px);
   background: #eeece5;
 }
 
 .reading-value {
-  min-width: 0;
   display: flex;
   align-items: baseline;
-  gap: clamp(5px, 0.65vw, 10px);
+  gap: clamp(4px, 0.55vw, 10px);
   white-space: nowrap;
 }
 
 .reading-value strong {
   min-width: 0;
-  overflow: hidden;
-  font-size: clamp(2.25rem, min(7vw, 10.5vh), 7.8rem);
+  font-size: clamp(2.15rem, min(6.2vw, 10vh), 7.8rem);
   font-weight: 520;
-  letter-spacing: -0.09em;
-  line-height: 0.9;
-  text-overflow: ellipsis;
+  letter-spacing: -0.1em;
+  line-height: 0.86;
 }
 
 .reading-value span {
+  flex: 0 0 auto;
   font-family: var(--font-geist-mono), monospace;
-  font-size: clamp(0.68rem, min(1.25vw, 2.1vh), 1.2rem);
+  font-size: clamp(0.7rem, min(1.3vw, 2.1vh), 1.2rem);
   font-weight: 650;
   letter-spacing: -0.02em;
 }
 
 .reading-copy h2 {
   margin: 0;
-  overflow: hidden;
   font-family: var(--font-geist-mono), monospace;
-  font-size: clamp(0.7rem, min(1.15vw, 2vh), 1.1rem);
+  font-size: clamp(0.72rem, min(1.15vw, 2vh), 1.12rem);
   font-weight: 750;
-  letter-spacing: 0.12em;
+  letter-spacing: 0.09em;
   line-height: 1.2;
-  text-overflow: ellipsis;
   text-transform: uppercase;
-  white-space: nowrap;
 }
 
 .reading-copy p {
   margin: clamp(5px, 0.65vw, 10px) 0 0;
   color: rgba(24, 55, 70, 0.62);
-  font-size: clamp(0.68rem, min(1.1vw, 1.9vh), 1.05rem);
+  font-size: clamp(0.72rem, min(1.05vw, 1.85vh), 1.05rem);
   line-height: 1.35;
 }
 
@@ -96,53 +92,24 @@ body {
 .sage { background: #d6dfbd; }
 .gold { background: #efd27c; }
 
-@media (orientation: landscape) {
+@media (max-width: 640px) {
   .screen-grid {
-    grid-template-columns: repeat(5, minmax(0, 1fr));
-    grid-template-rows: repeat(2, minmax(0, 1fr));
+    min-height: 100dvh;
+    grid-template-columns: 1fr;
+    grid-auto-rows: minmax(150px, auto);
+    padding: 12px;
+    gap: 10px;
   }
+
+  .reading-card { min-height: 150px; padding: 22px; }
+  .reading-value strong { font-size: clamp(3.2rem, 16vw, 5.4rem); }
 }
 
-@media (max-width: 640px) and (orientation: landscape) {
-  .screen-grid { padding: 4px; gap: 4px; }
-  .reading-card { padding: 8px; border-radius: 10px; }
-
-  .reading-value { gap: 2px; }
-
-  .reading-value strong {
-    font-size: clamp(1.35rem, 5.9vw, 2.3rem);
-    letter-spacing: -0.1em;
-  }
-
-  .reading-value span { font-size: clamp(0.42rem, 1.75vw, 0.58rem); }
-
-  .reading-copy h2 {
-    font-size: clamp(0.43rem, 1.68vw, 0.63rem);
-    letter-spacing: 0.055em;
-  }
-
-  .reading-copy p { display: none; }
-}
-
-@media (max-width: 320px) and (orientation: portrait) {
-  .screen-grid { padding: 4px; gap: 4px; }
-  .reading-card { padding: 8px; border-radius: 10px; }
-
-  .reading-value { gap: 3px; }
-
-  .reading-value strong { font-size: clamp(1.55rem, 12.5vw, 2.35rem); }
-  .reading-value span { font-size: clamp(0.48rem, 2.7vw, 0.64rem); }
-
-  .reading-copy h2 {
-    font-size: clamp(0.48rem, 2.5vw, 0.64rem);
-    letter-spacing: 0.05em;
-  }
-
-  .reading-copy p { display: none; }
-}
-
-@media (max-height: 450px) and (min-width: 641px) {
+@media (max-height: 520px) and (min-width: 641px) {
   .screen-grid { padding: 8px; gap: 8px; }
-  .reading-card { padding: 12px; }
+  .reading-card { padding: 12px; border-radius: 10px; }
   .reading-copy p { display: none; }
+  .reading-copy h2 { font-size: clamp(0.5rem, 1.3vw, 0.75rem); letter-spacing: 0.06em; }
+  .reading-value strong { font-size: clamp(1.8rem, min(5vw, 9vh), 3.6rem); }
+  .reading-value span { font-size: clamp(0.55rem, 1.2vw, 0.8rem); }
 }

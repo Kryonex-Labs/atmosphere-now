@@ -38,7 +38,7 @@ test("includes ten simple readings and live data sources", async () => {
     "Wind speed",
     "Wind direction",
     "Humidity",
-    "Atmospheric pressure",
+    "Air pressure",
     "Noise",
     "PM2.5",
     "PM10",
@@ -51,8 +51,7 @@ test("includes ten simple readings and live data sources", async () => {
   assert.match(dashboard, /api\.open-meteo\.com\/v1\/forecast/);
   assert.match(dashboard, /air-quality-api\.open-meteo\.com\/v1\/air-quality/);
   assert.match(dashboard, /calibrated local sensor/i);
-  assert.match(css, /grid-template-columns:\s*repeat\(2, minmax\(0, 1fr\)\)/);
-  assert.match(css, /@media \(orientation: landscape\)/);
-  assert.match(css, /grid-template-columns:\s*repeat\(5, minmax\(0, 1fr\)\)/);
-  assert.match(css, /@media \(max-width: 640px\) and \(orientation: landscape\)/);
+  assert.match(css, /repeat\(auto-fit, minmax\(min\(16rem, 100%\), 1fr\)\)/);
+  assert.doesNotMatch(css, /orientation: landscape/);
+  assert.match(css, /@media \(max-width: 640px\)/);
 });
