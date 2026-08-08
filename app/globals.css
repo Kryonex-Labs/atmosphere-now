@@ -48,6 +48,7 @@ body {
 }
 
 .reading-value strong {
+  min-width: 0;
   overflow: hidden;
   font-size: clamp(2.25rem, min(7vw, 10.5vh), 7.8rem);
   font-weight: 520;
@@ -65,12 +66,15 @@ body {
 
 .reading-copy h2 {
   margin: 0;
+  overflow: hidden;
   font-family: var(--font-geist-mono), monospace;
   font-size: clamp(0.7rem, min(1.15vw, 2vh), 1.1rem);
   font-weight: 750;
   letter-spacing: 0.12em;
   line-height: 1.2;
+  text-overflow: ellipsis;
   text-transform: uppercase;
+  white-space: nowrap;
 }
 
 .reading-copy p {
@@ -99,7 +103,45 @@ body {
   }
 }
 
-@media (max-height: 450px) {
+@media (max-width: 640px) and (orientation: landscape) {
+  .screen-grid { padding: 4px; gap: 4px; }
+  .reading-card { padding: 8px; border-radius: 10px; }
+
+  .reading-value { gap: 2px; }
+
+  .reading-value strong {
+    font-size: clamp(1.35rem, 5.9vw, 2.3rem);
+    letter-spacing: -0.1em;
+  }
+
+  .reading-value span { font-size: clamp(0.42rem, 1.75vw, 0.58rem); }
+
+  .reading-copy h2 {
+    font-size: clamp(0.43rem, 1.68vw, 0.63rem);
+    letter-spacing: 0.055em;
+  }
+
+  .reading-copy p { display: none; }
+}
+
+@media (max-width: 320px) and (orientation: portrait) {
+  .screen-grid { padding: 4px; gap: 4px; }
+  .reading-card { padding: 8px; border-radius: 10px; }
+
+  .reading-value { gap: 3px; }
+
+  .reading-value strong { font-size: clamp(1.55rem, 12.5vw, 2.35rem); }
+  .reading-value span { font-size: clamp(0.48rem, 2.7vw, 0.64rem); }
+
+  .reading-copy h2 {
+    font-size: clamp(0.48rem, 2.5vw, 0.64rem);
+    letter-spacing: 0.05em;
+  }
+
+  .reading-copy p { display: none; }
+}
+
+@media (max-height: 450px) and (min-width: 641px) {
   .screen-grid { padding: 8px; gap: 8px; }
   .reading-card { padding: 12px; }
   .reading-copy p { display: none; }
