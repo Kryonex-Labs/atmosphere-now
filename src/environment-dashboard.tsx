@@ -49,8 +49,47 @@ function Card({ card }: { card: DisplayCard }) {
   );
 }
 
+// ponytail: +100 offset approximates SPL from dBFS; swap constant for a real calibration curve if accuracy matters
+function useMicLevel() {
+  const [level, setLevel] = useState<number | null>(null);
+
+  useEffect(() => {
+    let ctx: AudioContext | null = null;
+    let interval: number | undefined;
+    let stream: MediaStream | null = null;
+
+    navigator.mediaDevices?.getUserMedia({ audio: true }).then((s) => {
+      stream = s;
+      ctx = new AudioContext();
+      const source = ctx.createMediaStreamSource(s);
+      const analyser = ctx.createAnalyser();
+      analyser.fftSize = 2048;
+      source.connect(analyser);
+      const buf = new Float32Array(analyser.fftSize);
+
+      interval = window.setInterval(() => {
+        analyser.getFloatTimeDomainData(buf);
+        let sum = 0;
+        for (let i = 0; i < buf.length; i++) sum += buf[i] * buf[i];
+        const rms = Math.sqrt(sum / buf.length);
+        const dbfs = rms > 0 ? 20 * Math.log10(rms) : -100;
+        setLevel(Math.max(0, Math.round(dbfs + 100)));
+      }, 1000);
+    }).catch(() => undefined);
+
+    return () => {
+      if (interval) clearInterval(interval);
+      stream?.getTracks().forEach((t) => t.stop());
+      ctx?.close();
+    };
+  }, []);
+
+  return level;
+}
+
 export default function EnvironmentDashboard() {
   const [readings, setReadings] = useState<Readings | null>(null);
+  const micLevel = useMicLevel();
 
   const loadReadings = useCallback(async (latitude: number, longitude: number) => {
     const weatherUrl = new URL("https://api.open-meteo.com/v1/forecast");
@@ -107,7 +146,7 @@ export default function EnvironmentDashboard() {
         { label: "Wind direction", value: windDirection(readings.weather.wind_direction_10m), description: `${Math.round(readings.weather.wind_direction_10m)}° from north`, tone: "mist" },
         { label: "Humidity", value: Math.round(readings.weather.relative_humidity_2m).toString(), unit: "%", description: "Relative humidity", tone: "aqua" },
         { label: "Air pressure", value: Math.round(readings.weather.surface_pressure).toString(), unit: "hPa", description: "Local surface pressure", tone: "stone" },
-        { label: "Noise", value: "—", description: "Calibrated local sensor needed", tone: "ink" },
+        { label: "Noise", value: micLevel !== null ? micLevel.toString() : "—", unit: micLevel !== null ? "~dB" : undefined, description: micLevel !== null ? "Uncalibrated device mic" : "Microphone access needed", tone: "ink" },
         { label: "PM2.5", value: readings.air.pm2_5.toFixed(1), unit: "µg/m³", description: "Fine particulate matter", tone: "mint" },
         { label: "PM10", value: readings.air.pm10.toFixed(1), unit: "µg/m³", description: "Coarse particulate matter", tone: "sage" },
         { label: "Light intensity", value: Math.round(readings.weather.shortwave_radiation).toString(), unit: "W/m²", description: "Outdoor solar radiation", tone: "gold" },
@@ -119,7 +158,7 @@ export default function EnvironmentDashboard() {
         { label: "Wind direction", value: "—", description: "Waiting for local conditions", tone: "mist" },
         { label: "Humidity", value: "—", description: "Waiting for local conditions", tone: "aqua" },
         { label: "Air pressure", value: "—", description: "Waiting for local conditions", tone: "stone" },
-        { label: "Noise", value: "—", description: "Calibrated local sensor needed", tone: "ink" },
+        { label: "Noise", value: micLevel !== null ? micLevel.toString() : "—", unit: micLevel !== null ? "~dB" : undefined, description: micLevel !== null ? "Uncalibrated device mic" : "Microphone access needed", tone: "ink" },
         { label: "PM2.5", value: "—", description: "Waiting for local conditions", tone: "mint" },
         { label: "PM10", value: "—", description: "Waiting for local conditions", tone: "sage" },
         { label: "Light intensity", value: "—", description: "Waiting for local conditions", tone: "gold" },
