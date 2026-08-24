@@ -192,10 +192,14 @@ export default function EnvironmentDashboard() {
   }, []);
 
   useEffect(() => {
-    if (!navigator.geolocation) return;
+    const params = new URLSearchParams(window.location.search);
+    const lat = parseFloat(params.get("lat") ?? "");
+    const lon = parseFloat(params.get("lon") ?? "");
+    const fixed = !isNaN(lat) && !isNaN(lon);
 
     const requestLocation = () => {
-      navigator.geolocation.getCurrentPosition(
+      if (fixed) { loadReadings(lat, lon); return; }
+      navigator.geolocation?.getCurrentPosition(
         ({ coords }) => loadReadings(coords.latitude, coords.longitude),
         () => undefined,
         { enableHighAccuracy: false, timeout: 12000, maximumAge: 300000 },
