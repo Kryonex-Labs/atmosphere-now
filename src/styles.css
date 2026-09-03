@@ -171,25 +171,33 @@ body { margin: 0; background: var(--paper); }
 
 /* ultrawide / kiosk: short viewport + wide screen */
 @media (max-height: 520px) and (min-width: 641px) {
-  .top-bar { padding: 2px clamp(6px, 0.8vw, 12px); }
-  .top-bar-title { font-size: clamp(0.6rem, 1vw, 0.85rem); }
-  .location-bar input { padding: 3px 8px; font-size: 0.7rem; }
-  .geo-btn { width: 24px; height: 24px; }
-  .geo-btn svg { width: 12px; height: 12px; }
+  .top-bar { padding: 1px clamp(6px, 0.8vw, 12px); }
+  .top-bar-title { font-size: clamp(0.55rem, 0.9vw, 0.78rem); }
+  .location-bar input { padding: 2px 8px; font-size: 0.65rem; }
+  .geo-btn { width: 22px; height: 22px; }
+  .geo-btn svg { width: 11px; height: 11px; }
 
   #root { display: flex; flex-direction: column; height: 100dvh; overflow: hidden; }
   .screen-grid {
     flex: 1;
     min-height: 0;
-    grid-template-columns: repeat(10, 1fr);
-    grid-template-rows: 1fr;
-    padding: 4px;
-    gap: 4px;
+    grid-template-columns: repeat(5, 1fr);
+    grid-template-rows: 1fr 1fr;
+    padding: 3px;
+    gap: 3px;
   }
-  .reading-card { padding: 6px 8px; border-radius: 6px; container-type: inline-size; }
-  .reading-value { overflow: hidden; }
-  .reading-value strong { font-size: clamp(1.4rem, min(38cqw, 28vh), 5rem); letter-spacing: -0.06em; }
-  .reading-value span { font-size: clamp(0.45rem, min(9cqw, 3vh), 0.8rem); }
-  .reading-copy h2 { font-size: clamp(0.5rem, min(0.85vw, 3vh), 0.8rem); letter-spacing: 0.04em; }
-  .reading-copy p { margin: 1px 0 0; font-size: clamp(0.42rem, min(0.7vw, 2.4vh), 0.65rem); line-height: 1.15; }
+  .reading-card {
+    position: relative;
+    padding: 4px 8px;
+    border-radius: 5px;
+    flex-direction: row;
+    align-items: baseline;
+    gap: 8px;
+  }
+  .reading-value { flex: 0 0 auto; overflow: hidden; }
+  .reading-value strong { font-size: clamp(1.8rem, min(5.5vw, 30vh), 6rem); letter-spacing: -0.06em; }
+  .reading-value span { font-size: clamp(0.42rem, min(0.85vw, 3.2vh), 0.75rem); }
+  .reading-copy { position: absolute; right: 8px; bottom: 4px; text-align: right; }
+  .reading-copy h2 { font-size: clamp(0.55rem, min(1vw, 4vh), 0.95rem); letter-spacing: 0.04em; }
+  .reading-copy p { margin: 1px 0 0; font-size: clamp(0.42rem, min(0.65vw, 2.6vh), 0.62rem); line-height: 1.2; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 }
