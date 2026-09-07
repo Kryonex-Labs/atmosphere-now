@@ -75,6 +75,9 @@ export default function EnvironmentDashboard() {
       return !isNaN(lat) && !isNaN(lon) ? { lat, lon } : null;
     },
   );
+  const [placeName, setPlaceName] = useState(
+    () => new URLSearchParams(window.location.search).get("place") ?? "",
+  );
   const coordsRef = useRef(coords);
   const micLevel = useMicLevel();
 
@@ -179,6 +182,7 @@ export default function EnvironmentDashboard() {
       url.searchParams.set("lon", lon.toFixed(4));
       url.searchParams.set("place", name);
       history.replaceState(null, "", url);
+      setPlaceName(name);
     },
     [],
   );
@@ -194,6 +198,7 @@ export default function EnvironmentDashboard() {
         url.searchParams.delete("lon");
         url.searchParams.delete("place");
         history.replaceState(null, "", url);
+        setPlaceName("");
       },
       () => undefined,
       { enableHighAccuracy: false, timeout: 12000, maximumAge: 300000 },
@@ -203,7 +208,7 @@ export default function EnvironmentDashboard() {
   const pmDesc = (label: string) => {
     if (!readings) return "Waiting for local conditions";
     if (readings.air.source === "cpcb")
-      return `${readings.air.station} · ~2 km`;
+      return placeName ? `${placeName} · ~2 km` : "Nearest station · ~2 km";
     return `${label === "PM2.5" ? "Fine" : "Coarse"} particulate · ~45 km grid`;
   };
 
